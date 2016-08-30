@@ -5,12 +5,12 @@ var gra = {
 	players : new Array(),
 	klawisze : new Array(),
 	//isKeyDown: false,
-	skok: 20,
 	//key: 0,
-	boardSize: {w: 300, h: 300},
-	playerSize: {w: 20, h: 20},
+	//skok:20,
+	//boardSize: {w: 300, h: 300},
+	//playerSize: {w: 20, h: 20},
 	init: function(skok){
-		Storage();
+		//Storage();
 		this.skok=skok;
 		document.onkeydown = this.keyDown;
 		document.onkeyup = this.keyUp;
@@ -53,13 +53,13 @@ var gra = {
 				}
 			
 				if(gra.players[p].location.x<0) gra.players[p].location.x=0;
-				if(gra.players[p].location.x>gra.boardSize.h-gra.playerSize.h) gra.players[p].location.x=gra.boardSize.h-gra.playerSize.h;
+				if(gra.players[p].location.x>Config.get("boardSize").h-Config.get("playerSize").h) gra.players[p].location.x=Config.get("boardSize").h-Config.get("playerSize").h;
 
 				if(gra.players[p].location.y<0) gra.players[p].location.y=0;
-				if(gra.players[p].location.y>gra.boardSize.w-gra.playerSize.w) gra.players[p].location.y=gra.boardSize.w-gra.playerSize.w;
+				if(gra.players[p].location.y>Config.get("boardSize").w-Config.get("playerSize").w) gra.players[p].location.y=Config.get("boardSize").w-Config.get("playerSize").w;
 
 				//console.log(gra.kolizja(gra.players,p,gra.playerSize));
-				if(gra.kolizja(gra.players,p,gra.playerSize)){gra.players[p].location=pozycja;}
+				if(gra.kolizja(gra.players,p,Config.get("playerSize"))){gra.players[p].location=pozycja;}
 			}
 
 		gra.refresh();
@@ -74,14 +74,14 @@ var gra = {
 	},
 	spawn: function(){
 	 	var parent = document.getElementById('board');
-        parent.style.width = this.boardSize.w;
-        parent.style.height = this.boardSize.h;
+        parent.style.width = Config.get("boardSize").w;
+        parent.style.height = Config.get("boardSize").h;
         for (p = 0; p < this.players.length; ++p) {
         var element = document.createElement('div'); //tworzymy nowego Diva
         element.className = "wsad";
         element.id = 'player_'+p;
-        element.style.width = this.playerSize.w;
-        element.style.height = this.playerSize.h;  
+        element.style.width = Config.get("playerSize").w;
+        element.style.height = Config.get("playerSize").h;  
         element.style.top = this.players[p].location.x;
         element.style.left = this.players[p].location.y;
 		parent.appendChild(element); //wstawiamy element do drzewa dokumentu
