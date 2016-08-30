@@ -37,6 +37,7 @@ function clone(obj) {
             copy[i] = clone(obj[i]);
         }
         return copy;
+        dupa dupa dupa
     }
 
     // Handle Object
