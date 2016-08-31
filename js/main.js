@@ -1,20 +1,21 @@
-// @todo
-// ***wielu graczy (obsługa wielu klawiszy)
-// redux - zrobic w oddzienym pliku, ogarnac requireJS //requireJS- done
-//przeniesc callbacki klawiszy do innego pliku
-// ustalanie własnych klawiszy
-// ***one key one move
-// czołgi, strzałki obracaja obiektem // js/gra.js
-// strzelanie // 
-// punktacja
-// custom mapy
-// ściany(losowo)
-// funkcja dodawania graczy
-// edytor mapy/wczytywanie mapy(najpierw sciany)
-// power upy (invincible, faster shooting)
-// react
-// obsluga klient serwer(node.js)
-
+/**
+ * @todo
+ * ***wielu graczy (obsługa wielu klawiszy)
+/*  redux - zrobic w oddzienym pliku, ogarnac requireJS //requireJS- done
+/* przeniesc callbacki klawiszy do innego pliku
+/*  ustalanie własnych klawiszy
+/*  ***one key one move
+/*  czołgi, strzałki obracaja obiektem //  js/gra.js
+/*  strzelanie 
+/*  punktacja
+/*  custom mapy
+/*  ściany(losowo)
+/*  funkcja dodawania graczy
+/*  edytor mapy/wczytywanie mapy(najpierw sciany)
+/*  power upy (invincible, faster shooting)
+/*  react
+/*  obsluga klient serwer(node.js)
+ */
 
 ///////
 // OGARNAC TA FUNKCJE

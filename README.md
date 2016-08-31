@@ -1,4 +1,5 @@
 # Projekt Gra
 
 **Dependencies:**
-    -requireJS
+
+- requireJS
