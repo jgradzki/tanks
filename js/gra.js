@@ -9,68 +9,77 @@ var gra = {
 	//skok:20,
 	//boardSize: {w: 300, h: 300},
 	//playerSize: {w: 20, h: 20},
+	//////////////
+	playerMoveState: {
+		FORWARD: 'FORWARD',
+		BACKWARD: 'BACKWARD',
+		LEFTWARD: 'LEFTWARD',
+		RIGHTWARD: 'RIGHTWARD',
+		NONE: 'NONE'
+	},
+	/////////////
+
 	init: function(skok){
 		'use strict';
 		this.skok=skok;
 		document.onkeydown = this.keyDown;
 		document.onkeyup = this.keyUp;
-		this.players.push({keys: {f: 38, b: 40, l: 37, r: 39}, keysCounter: {f: 0, b: 0, l: 0, r: 0}, location: {x: 0, y:0}});
-		this.players.push({keys: {f: 87, b: 83, l: 65, r: 68}, keysCounter: {f: 0, b: 0, l: 0, r: 0}, location: {x: 280, y:280}});
+		this.players.push({keys: {f: 38, b: 40, l: 37, r: 39}, lastMove: this.playerMoveState.NONE, location: {x: 0, y:0}});
+		this.players.push({keys: {f: 87, b: 83, l: 65, r: 68}, lastMove: this.playerMoveState.NONE, location: {x: 280, y:280}});
 		this.spawn();
-		setInterval(this.process, 50);
+		setInterval(this.process.bind(this), 50);
 	},
 
 	process: function(){
 		'use strict';
 			
-			for (var p = 0; p < gra.players.length; ++p) {
+			for (var p = 0; p < this.players.length; ++p) {
 
-				var pozycja=clone(gra.players[p].location);
-			
+				var pozycja=clone(this.players[p].location);
 
-
-
-				if(gra.keyStatus(gra.players[p].keys.f)){
-					if(gra.players[p].keysCounter.f==0){
-						gra.players[p].location.x-=gra.skok;
-						gra.players[p].keysCounter.f++;
+				if(this.keyStatus(this.players[p].keys.f)){
+					if(this.players[p].lastMove!==this.playerMoveState.FORWARD){
+						this.players[p].location.x-=this.skok;
+						this.players[p].lastMove=this.playerMoveState.FORWARD;
 					}
-				}else if(gra.keyStatus(gra.players[p].keys.b)){
-					if(gra.players[p].keysCounter.b==0){
-						gra.players[p].location.x+=gra.skok;
-						gra.players[p].keysCounter.b++;
+				}else if(this.keyStatus(this.players[p].keys.b)){
+						if(this.players[p].lastMove!==this.playerMoveState.BACKWARD){
+						this.players[p].location.x+=this.skok;
+						this.players[p].lastMove=this.playerMoveState.BACKWARD;
 					}
-				}else if(gra.keyStatus(gra.players[p].keys.l)){
-					if(gra.players[p].keysCounter.l==0){
-						gra.players[p].location.y-=gra.skok;
-						gra.players[p].keysCounter.l++;
+				}else if(this.keyStatus(this.players[p].keys.l)){
+						if(this.players[p].lastMove!==this.playerMoveState.LEFTWARD){
+						this.players[p].location.y-=this.skok;
+						this.players[p].lastMove=this.playerMoveState.LEFTWARD;
 					}
-				}else if(gra.keyStatus(gra.players[p].keys.r)){
-					if(gra.players[p].keysCounter.r==0){
-						gra.players[p].location.y+=gra.skok;
-						gra.players[p].keysCounter.r++;
+				}else if(this.keyStatus(this.players[p].keys.r)){
+						if(this.players[p].lastMove!==this.playerMoveState.RIGHTWARD){
+						this.players[p].location.y+=this.skok;
+						this.players[p].lastMove=this.playerMoveState.RIGHTWARD;
 					}
+				}else{
+					this.players[p].lastMove=this.playerMoveState.NONE;
 				}
 			
-				if(gra.players[p].location.x<0) gra.players[p].location.x=0;
-				if(gra.players[p].location.x>Config.get("boardSize").h-Config.get("playerSize").h) gra.players[p].location.x=Config.get("boardSize").h-Config.get("playerSize").h;
+				if(this.players[p].location.x<0) this.players[p].location.x=0;
+				if(this.players[p].location.x>Config.get("boardSize").h-Config.get("playerSize").h) this.players[p].location.x=Config.get("boardSize").h-Config.get("playerSize").h;
 
-				if(gra.players[p].location.y<0) gra.players[p].location.y=0;
-				if(gra.players[p].location.y>Config.get("boardSize").w-Config.get("playerSize").w) gra.players[p].location.y=Config.get("boardSize").w-Config.get("playerSize").w;
+				if(this.players[p].location.y<0) this.players[p].location.y=0;
+				if(this.players[p].location.y>Config.get("boardSize").w-Config.get("playerSize").w) this.players[p].location.y=Config.get("boardSize").w-Config.get("playerSize").w;
 
-				//console.log(gra.kolizja(gra.players,p,gra.playerSize));
-				if(gra.kolizja(gra.players,p,Config.get("playerSize"))){gra.players[p].location=pozycja;}
+				//console.log(this.kolizja(this.players,p,this.playerSize));
+				if(this.kolizja(this.players,p,Config.get("playerSize"))){this.players[p].location=pozycja;}
 			}
 
-		gra.refresh();
+		this.refresh();
 	},
 
 	refresh: function(){
 		'use strict';
 		for (var p = 0; p < this.players.length; ++p) {
 			var t = document.getElementById('player_'+p);
-			t.style.top=gra.players[p].location.x;
-			t.style.left=gra.players[p].location.y;
+			t.style.top=this.players[p].location.x;
+			t.style.left=this.players[p].location.y;
 		}
 	},
 	spawn: function(){
@@ -93,26 +102,14 @@ var gra = {
 	keyDown: function(e){
 		'use strict';
 		e = e || window.event;
-		console.log(e.keyCode);
-			gra.klawisze[e.keyCode]=true;
+		//console.log(e.keyCode);
+		gra.klawisze[e.keyCode]=true;
 	},
 
 	keyUp: function(e){
 		'use strict';
 		e = e || window.event;
-			gra.klawisze[e.keyCode]=false;
-			for(var p=0; p<gra.players.length; p++)
-			{
-				if(e.keyCode==gra.players[p].keys.f){
-					gra.players[p].keysCounter.f=0;
-				}else if(e.keyCode==gra.players[p].keys.b){
-					gra.players[p].keysCounter.b=0;
-				}else if(e.keyCode==gra.players[p].keys.l){
-					gra.players[p].keysCounter.l=0;
-				}else if(e.keyCode==gra.players[p].keys.r){
-					gra.players[p].keysCounter.r=0;
-				}
-			}
+		gra.klawisze[e.keyCode]=false;
 	},
 
 	keyStatus: function(id){
