@@ -60,12 +60,12 @@ requirejs.config({
 });
 
 
-
-require([
+requirejs([
   // Load our app module and pass it to our definition function
   'config',
   'js/gra'
 ], function(Config, App){
+    'use strict';
   // The "app" dependency is passed in as "App"
   App.init(Config.skok);
 });

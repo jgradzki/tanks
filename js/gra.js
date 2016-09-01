@@ -10,7 +10,7 @@ var gra = {
 	//boardSize: {w: 300, h: 300},
 	//playerSize: {w: 20, h: 20},
 	init: function(skok){
-		//Storage();
+		'use strict';
 		this.skok=skok;
 		document.onkeydown = this.keyDown;
 		document.onkeyup = this.keyUp;
@@ -21,9 +21,9 @@ var gra = {
 	},
 
 	process: function(){
-		
+		'use strict';
 			
-			for (p = 0; p < gra.players.length; ++p) {
+			for (var p = 0; p < gra.players.length; ++p) {
 
 				var pozycja=clone(gra.players[p].location);
 			
@@ -66,17 +66,19 @@ var gra = {
 	},
 
 	refresh: function(){
-		for (p = 0; p < this.players.length; ++p) {
+		'use strict';
+		for (var p = 0; p < this.players.length; ++p) {
 			var t = document.getElementById('player_'+p);
 			t.style.top=gra.players[p].location.x;
 			t.style.left=gra.players[p].location.y;
 		}
 	},
 	spawn: function(){
+		'use strict';
 	 	var parent = document.getElementById('board');
         parent.style.width = Config.get("boardSize").w;
         parent.style.height = Config.get("boardSize").h;
-        for (p = 0; p < this.players.length; ++p) {
+        for (var p = 0; p < this.players.length; ++p) {
         var element = document.createElement('div'); //tworzymy nowego Diva
         element.className = "wsad";
         element.id = 'player_'+p;
@@ -89,15 +91,17 @@ var gra = {
 	},
 	
 	keyDown: function(e){
+		'use strict';
 		e = e || window.event;
 		console.log(e.keyCode);
 			gra.klawisze[e.keyCode]=true;
 	},
 
 	keyUp: function(e){
+		'use strict';
 		e = e || window.event;
 			gra.klawisze[e.keyCode]=false;
-			for(p=0; p<gra.players.length; p++)
+			for(var p=0; p<gra.players.length; p++)
 			{
 				if(e.keyCode==gra.players[p].keys.f){
 					gra.players[p].keysCounter.f=0;
@@ -112,6 +116,7 @@ var gra = {
 	},
 
 	keyStatus: function(id){
+		'use strict';
 		if (typeof gra.klawisze[id] != "undefined"){
 			return gra.klawisze[id];
 		}else {
@@ -122,10 +127,11 @@ var gra = {
 
 
 	kolizja: function(players,i,size){
-		for (s = 0; s < players.length; ++s) {
+		'use strict';
+		for (var s = 0; s < players.length; ++s) {
 			if(s==i)continue;
-			rect1=players[s].location;
-			rect2=players[i].location;
+			var rect1=players[s].location;
+			var rect2=players[i].location;
 			if(rect1.x < rect2.x + size.w &&
    				rect1.x + size.w > rect2.x &&
    				rect1.y < rect2.y + size.h &&
