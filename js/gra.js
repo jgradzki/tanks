@@ -1,4 +1,4 @@
-define(['config', 'lib/storage'], function(Config, Storage) {
+define(['config', 'lib/storage', 'lib/eventHandler'], function(Config, Storage, EventHandler) {
 
 var gra = {
 
@@ -21,6 +21,8 @@ var gra = {
 
 	init: function(skok){
 		'use strict';
+		var eventHandler = new EventHandler();
+		eventHandler.add(document, 'click', this.test);
 		this.skok=skok;
 		document.onkeydown = this.keyDown;
 		document.onkeyup = this.keyUp;
@@ -28,6 +30,10 @@ var gra = {
 		this.players.push({keys: {f: 87, b: 83, l: 65, r: 68}, lastMove: this.playerMoveState.NONE, location: {x: 280, y:280}});
 		this.spawn();
 		setInterval(this.process.bind(this), 50);
+	},
+
+	test: function(){
+		alert('wowo');
 	},
 
 	process: function(){
