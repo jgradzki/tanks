@@ -17,6 +17,8 @@ var gra = {
 		RIGHTWARD: 'RIGHTWARD',
 		NONE: 'NONE'
 	},
+	//gora prawo dol lewo
+
 	/////////////
 
 	init: function(skok){
@@ -41,7 +43,8 @@ var gra = {
 			for (var p = 0; p < this.players.length; ++p) {
 
 				var pozycja=clone(this.players[p].location);
-
+				//movement
+				var element = document.getElementById('player_'+p);
 				if(this.keyStatus(this.players[p].keys.f)){
 					if(this.players[p].lastMove!==this.playerMoveState.FORWARD){
 						this.players[p].location.x-=this.skok;
@@ -54,25 +57,25 @@ var gra = {
 					}
 				}else if(this.keyStatus(this.players[p].keys.l)){
 						if(this.players[p].lastMove!==this.playerMoveState.LEFTWARD){
-						this.players[p].location.y-=this.skok;
+						this.obrot(p,-1);
 						this.players[p].lastMove=this.playerMoveState.LEFTWARD;
 					}
 				}else if(this.keyStatus(this.players[p].keys.r)){
 						if(this.players[p].lastMove!==this.playerMoveState.RIGHTWARD){
-						this.players[p].location.y+=this.skok;
+						this.obrot(p,1);
 						this.players[p].lastMove=this.playerMoveState.RIGHTWARD;
 					}
 				}else{
 					this.players[p].lastMove=this.playerMoveState.NONE;
 				}
-			
+				//granica mapy
 				if(this.players[p].location.x<0) this.players[p].location.x=0;
 				if(this.players[p].location.x>Config.get("boardSize").h-Config.get("playerSize").h) this.players[p].location.x=Config.get("boardSize").h-Config.get("playerSize").h;
 
 				if(this.players[p].location.y<0) this.players[p].location.y=0;
 				if(this.players[p].location.y>Config.get("boardSize").w-Config.get("playerSize").w) this.players[p].location.y=Config.get("boardSize").w-Config.get("playerSize").w;
 
-				//console.log(this.kolizja(this.players,p,this.playerSize));
+				//kolizja
 				if(this.kolizja(this.players,p,Config.get("playerSize"))){this.players[p].location=pozycja;}
 			}
 
@@ -146,7 +149,22 @@ var gra = {
 
 
 	addplayer: function(keys,location){
-		this.players.push({keys:keys, lastMove: this.playerMoveState.NONE, location:location});
+		this.players.push({keys:keys, position:Config.get("position") ,lastMove: this.playerMoveState.NONE, location:location});
+	},
+
+	obrot: function(p,rotate){
+		'use strict';
+		console.log(this.players[p]);
+			this.players[p].position+=rotate;
+			console.log(this.players[p]);
+			if (this.players[p].position==-1){
+				this.players[p].position=3;
+			}else if (this.players[p].position==4) {
+				this.players[p].position=0;
+			}
+			
+			var element = document.getElementById('player_'+p);
+			element.style.transform = 'rotate('+(90*this.players[p].position)+'deg)';
 	}
 	
 	

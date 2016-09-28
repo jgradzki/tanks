@@ -4,6 +4,7 @@ define([], function() {
 		skok: 20,
 		boardSize: {w: 300, h: 300},
 		playerSize: {w: 20, h: 20},
+		position: 0,
 		get: function(key){
 			return this[key];
 		}
