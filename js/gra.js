@@ -22,19 +22,16 @@ var gra = {
 	init: function(skok){
 		'use strict';
 		var eventHandler = new EventHandler();
-		eventHandler.add(document, 'click', this.test);
+		//eventHandler.add(document, 'click', this.test);
 		this.skok=skok;
-		document.onkeydown = this.keyDown;
-		document.onkeyup = this.keyUp;
+		eventHandler.add(document, 'keydown', this.keyDown);
+		eventHandler.add(document, 'keyup', this.keyUp);
 		this.players.push({keys: {f: 38, b: 40, l: 37, r: 39}, lastMove: this.playerMoveState.NONE, location: {x: 0, y:0}});
 		this.players.push({keys: {f: 87, b: 83, l: 65, r: 68}, lastMove: this.playerMoveState.NONE, location: {x: 280, y:280}});
 		this.spawn();
 		setInterval(this.process.bind(this), 50);
 	},
 
-	test: function(){
-		alert('wowo');
-	},
 
 	process: function(){
 		'use strict';

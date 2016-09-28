@@ -18,22 +18,22 @@ define([], function(){
 			for(i=0;this.events.length>i; i++){
 				console.log(typeof(this.events[i]))
 				if(typeof(this.events[i])==null){
-					break; void(console.log('lol'));
+					break;
 				}
 			}
 		}
 		console.log(i);
-
 		// pod znalezionym id dodac do tablicy callback
+		this.events[i]=callback;
 		//przeslac do this.event znaeziony id
-		target.addEventListener(event, this.event.bind(this, 1));
+		target.addEventListener(event, this.event.bind(this, i));
 	};
 
 	EventHandler.prototype.event = function(id, e){
 		'use strict';
 		//jakis tam staff ktory zawsze przy evencie ma byc wykonywany
-
 		//wywolac funkcje znajdujaca sie w this.events pod wskazanym id
+		this.events[id](e);
 	}
 
 	
