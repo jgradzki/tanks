@@ -47,22 +47,38 @@ var gra = {
 				var element = document.getElementById('player_'+p);
 				if(this.keyStatus(this.players[p].keys.f)){
 					if(this.players[p].lastMove!==this.playerMoveState.FORWARD){
-						this.players[p].location.x-=this.skok;
+						if(this.kierunek(p,0)){
+							this.players[p].location.x-=this.skok;
+						}else{
+							this.obrot(p,0);
+						}
 						this.players[p].lastMove=this.playerMoveState.FORWARD;
 					}
 				}else if(this.keyStatus(this.players[p].keys.b)){
 						if(this.players[p].lastMove!==this.playerMoveState.BACKWARD){
-						this.players[p].location.x+=this.skok;
+							if(this.kierunek(p,2)){
+							this.players[p].location.x+=this.skok;
+						}else{
+							this.obrot(p,2);
+						}
 						this.players[p].lastMove=this.playerMoveState.BACKWARD;
 					}
 				}else if(this.keyStatus(this.players[p].keys.l)){
 						if(this.players[p].lastMove!==this.playerMoveState.LEFTWARD){
-						this.obrot(p,-1);
+						if(this.kierunek(p,3)){
+							this.players[p].location.y-=this.skok;
+						}else{
+							this.obrot(p,3);
+						}
 						this.players[p].lastMove=this.playerMoveState.LEFTWARD;
 					}
 				}else if(this.keyStatus(this.players[p].keys.r)){
 						if(this.players[p].lastMove!==this.playerMoveState.RIGHTWARD){
-						this.obrot(p,1);
+						if(this.kierunek(p,1)){
+							this.players[p].location.y+=this.skok;
+						}else{
+							this.obrot(p,1);
+						}
 						this.players[p].lastMove=this.playerMoveState.RIGHTWARD;
 					}
 				}else{
@@ -154,17 +170,18 @@ var gra = {
 
 	obrot: function(p,rotate){
 		'use strict';
-		console.log(this.players[p]);
-			this.players[p].position+=rotate;
-			console.log(this.players[p]);
-			if (this.players[p].position==-1){
-				this.players[p].position=3;
-			}else if (this.players[p].position==4) {
-				this.players[p].position=0;
-			}
+			this.players[p].position=rotate;		
 			
 			var element = document.getElementById('player_'+p);
 			element.style.transform = 'rotate('+(90*this.players[p].position)+'deg)';
+	},
+
+	kierunek: function(p,x){
+		if(this.players[p].position==x){
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 	
