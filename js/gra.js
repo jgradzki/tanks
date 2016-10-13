@@ -2,7 +2,7 @@ define(['config', 'lib/storage', 'lib/eventHandler'], function(Config, Storage, 
 
 var gra = {
 
-	players : new Array(),
+	//players : new Array(),
 	klawisze : new Array(),
 	//isKeyDown: false,
 	//key: 0,
@@ -28,71 +28,105 @@ var gra = {
 		this.skok=skok;
 		eventHandler.add(document, 'keydown', this.keyDown);
 		eventHandler.add(document, 'keyup', this.keyUp);
+
+		const { createStore } = Redux;
+		const { combineReducers } = Redux;
+		const reducers = combineReducers({players: this.playersReducer, walls: this.wallsReducer});
+		this.store = createStore(reducers);
+		console.log(this.store.getState());
+		//this.store.dispatch({type: 'ADD_PLAYER', keys:{f: 38, b: 40, l: 37, r: 39},location:{x: 0, y:0},lastMove: this.playerMoveState.NONE});
+		
+
 		this.addplayer({f: 38, b: 40, l: 37, r: 39},{x: 0, y:0});
 		this.addplayer({f: 87, b: 83, l: 65, r: 68},{x: 280, y:280});
-		//this.players.push({keys: {f: 38, b: 40, l: 37, r: 39}, lastMove: this.playerMoveState.NONE, location: {x: 0, y:0}});
-		//this.players.push({keys: {f: 87, b: 83, l: 65, r: 68}, lastMove: this.playerMoveState.NONE, location: {x: 280, y:280}});
+		console.log(this.store.getState());
+		//players.push({keys: {f: 38, b: 40, l: 37, r: 39}, lastMove: this.playerMoveState.NONE, location: {x: 0, y:0}});
+		//players.push({keys: {f: 87, b: 83, l: 65, r: 68}, lastMove: this.playerMoveState.NONE, location: {x: 280, y:280}});
 		this.spawn();
 		setInterval(this.process.bind(this), 50);
 	},
 
+	playersReducer : (state = [], action) => {
+		switch(action.type){
+			case 'ADD_PLAYER':
+				return [
+					...state,
+					{
+						keys: action.keys,
+						position: Config.get("position"),
+						lastMove: action.lastMove,
+						location: action.location
+					}
+				];
+			default: 
+				return state;
+		}	
+	},
+
+	wallsReducer: (state = [], action) =>{
+		switch(action.type){
+
+			default: 
+				return state;
+		}	
+	},
 
 	process: function(){
 		'use strict';
-			
-			for (var p = 0; p < this.players.length; ++p) {
+			let players = this.store.getState().players;
+			for (var p = 0; p < players.length; ++p) {
 
-				var pozycja=clone(this.players[p].location);
+				var pozycja=clone(players[p].location);
 				//movement
 				var element = document.getElementById('player_'+p);
-				if(this.keyStatus(this.players[p].keys.f)){
-					if(this.players[p].lastMove!==this.playerMoveState.FORWARD){
+				if(this.keyStatus(players[p].keys.f)){
+					if(players[p].lastMove!==this.playerMoveState.FORWARD){
 						if(this.kierunek(p,0)){
-							this.players[p].location.x-=this.skok;
+							players[p].location.x-=this.skok;
 						}else{
 							this.obrot(p,0);
 						}
-						this.players[p].lastMove=this.playerMoveState.FORWARD;
+						players[p].lastMove=this.playerMoveState.FORWARD;
 					}
-				}else if(this.keyStatus(this.players[p].keys.b)){
-						if(this.players[p].lastMove!==this.playerMoveState.BACKWARD){
+				}else if(this.keyStatus(players[p].keys.b)){
+						if(players[p].lastMove!==this.playerMoveState.BACKWARD){
 							if(this.kierunek(p,2)){
-							this.players[p].location.x+=this.skok;
+							players[p].location.x+=this.skok;
 						}else{
 							this.obrot(p,2);
 						}
-						this.players[p].lastMove=this.playerMoveState.BACKWARD;
+						players[p].lastMove=this.playerMoveState.BACKWARD;
 					}
-				}else if(this.keyStatus(this.players[p].keys.l)){
-						if(this.players[p].lastMove!==this.playerMoveState.LEFTWARD){
+				}else if(this.keyStatus(players[p].keys.l)){
+						if(players[p].lastMove!==this.playerMoveState.LEFTWARD){
 						if(this.kierunek(p,3)){
-							this.players[p].location.y-=this.skok;
+							players[p].location.y-=this.skok;
 						}else{
 							this.obrot(p,3);
 						}
-						this.players[p].lastMove=this.playerMoveState.LEFTWARD;
+						players[p].lastMove=this.playerMoveState.LEFTWARD;
 					}
-				}else if(this.keyStatus(this.players[p].keys.r)){
-						if(this.players[p].lastMove!==this.playerMoveState.RIGHTWARD){
+				}else if(this.keyStatus(players[p].keys.r)){
+						if(players[p].lastMove!==this.playerMoveState.RIGHTWARD){
 						if(this.kierunek(p,1)){
-							this.players[p].location.y+=this.skok;
+							players[p].location.y+=this.skok;
 						}else{
 							this.obrot(p,1);
 						}
-						this.players[p].lastMove=this.playerMoveState.RIGHTWARD;
+						players[p].lastMove=this.playerMoveState.RIGHTWARD;
 					}
 				}else{
-					this.players[p].lastMove=this.playerMoveState.NONE;
+					players[p].lastMove=this.playerMoveState.NONE;
 				}
 				//granica mapy
-				if(this.players[p].location.x<0) this.players[p].location.x=0;
-				if(this.players[p].location.x>Config.get("boardSize").h-Config.get("playerSize").h) this.players[p].location.x=Config.get("boardSize").h-Config.get("playerSize").h;
+				if(players[p].location.x<0) players[p].location.x=0;
+				if(players[p].location.x>Config.get("boardSize").h-Config.get("playerSize").h) players[p].location.x=Config.get("boardSize").h-Config.get("playerSize").h;
 
-				if(this.players[p].location.y<0) this.players[p].location.y=0;
-				if(this.players[p].location.y>Config.get("boardSize").w-Config.get("playerSize").w) this.players[p].location.y=Config.get("boardSize").w-Config.get("playerSize").w;
+				if(players[p].location.y<0) players[p].location.y=0;
+				if(players[p].location.y>Config.get("boardSize").w-Config.get("playerSize").w) players[p].location.y=Config.get("boardSize").w-Config.get("playerSize").w;
 
 				//kolizja
-				if(this.kolizja(this.players,p,Config.get("playerSize"))){this.players[p].location=pozycja;}
+				if(this.kolizja(players,p,Config.get("playerSize"))){players[p].location=pozycja;}
 			}
 
 		this.refresh();
@@ -100,10 +134,11 @@ var gra = {
 
 	refresh: function(){
 		'use strict';
-		for (var p = 0; p < this.players.length; ++p) {
+		let players = this.store.getState().players;
+		for (var p = 0; p < players.length; ++p) {
 			var t = document.getElementById('player_'+p);
-			t.style.top=this.players[p].location.x;
-			t.style.left=this.players[p].location.y;
+			t.style.top=players[p].location.x;
+			t.style.left=players[p].location.y;
 		}
 	},
 	spawn: function(){
@@ -111,14 +146,15 @@ var gra = {
 	 	var parent = document.getElementById('board');
         parent.style.width = Config.get("boardSize").w;
         parent.style.height = Config.get("boardSize").h;
-        for (var p = 0; p < this.players.length; ++p) {
+        let players = this.store.getState().players;
+        for (var p = 0; p < players.length; ++p) {
         var element = document.createElement('div'); //tworzymy nowego Diva
         element.className = "wsad";
         element.id = 'player_'+p;
         element.style.width = Config.get("playerSize").w;
         element.style.height = Config.get("playerSize").h;  
-        element.style.top = this.players[p].location.x;
-        element.style.left = this.players[p].location.y;
+        element.style.top = players[p].location.x;
+        element.style.left = players[p].location.y;
 		parent.appendChild(element); //wstawiamy element do drzewa dokumentu
 		}	
 	},
@@ -165,19 +201,23 @@ var gra = {
 
 
 	addplayer: function(keys,location){
-		this.players.push({keys:keys, position:Config.get("position") ,lastMove: this.playerMoveState.NONE, location:location});
+		//players.push({keys:keys, position:Config.get("position") ,lastMove: this.playerMoveState.NONE, location:location});
+				this.store.dispatch({type: 'ADD_PLAYER', keys,location,lastMove: this.playerMoveState.NONE});
 	},
 
 	obrot: function(p,rotate){
 		'use strict';
-			this.players[p].position=rotate;		
-			
-			var element = document.getElementById('player_'+p);
-			element.style.transform = 'rotate('+(90*this.players[p].position)+'deg)';
+		let players = this.store.getState().players;
+		players[p].position=rotate;		
+		console.log(this.store.getState());
+		var element = document.getElementById('player_'+p);
+		element.style.transform = 'rotate('+(90*players[p].position)+'deg)';
 	},
 
 	kierunek: function(p,x){
-		if(this.players[p].position==x){
+		'use strict';
+		let players = this.store.getState().players;
+		if(players[p].position==x){
 			return true;
 		}else{
 			return false;
